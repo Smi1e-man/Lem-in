@@ -6,7 +6,7 @@
 #    By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2018/10/24 13:02:07 by seshevch          #+#    #+#              #
-#    Updated: 2019/01/25 13:31:17 by seshevch         ###   ########.fr        #
+#    Updated: 2019/01/26 13:22:41 by seshevch         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -53,15 +53,15 @@ INCL = ./includes
 all: $(NAME)
 
 $(NAME): $(OBJ)
-		ar rc $(NAME) $(OBJ)
+		@ar rc $(NAME) $(OBJ)
 
 $(OBJ): %.o: %.c
-		gcc $(FLAGS) -c $< -o $@ -I $(INCL)
+		@gcc $(FLAGS) -c $< -o $@ -I $(INCL)
 
 clean: 
-		rm -rf $(OBJ)
+		@rm -rf $(OBJ)
 
 fclean: clean
-		rm -rf $(NAME)
+		@rm -rf $(NAME)
 
 re: fclean all
