@@ -6,7 +6,7 @@
 #    By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/26 12:51:50 by seshevch          #+#    #+#              #
-#    Updated: 2019/01/28 16:45:14 by seshevch         ###   ########.fr        #
+#    Updated: 2019/02/01 13:54:12 by seshevch         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,7 +14,7 @@ NAME = lem-in
 
 LIB = libft/libft.a
 
-FLAGS = -Wall -Wextra -Werror
+FLAGS = -Wall -Wextra -Werror -g
 
 SRCS = main.c
 
@@ -25,7 +25,7 @@ INCL = ./libft/includes
 all: $(NAME)
 
 $(NAME): $(OBJ) $(LIB)
-		gcc -g $(FLAGS) $(OBJ) $(LIB) -o $(NAME) 
+		gcc $(FLAGS) $(OBJ) $(LIB) -o $(NAME)
 
 $(OBJ): %.o: %.c
 		gcc $(FLAGS) -c $< -o $@ -I $(INCL)
