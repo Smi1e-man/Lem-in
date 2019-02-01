@@ -8,10 +8,10 @@
 			"name": "(lldb) Launch",
 			"type": "cppdbg",
 			"request": "launch",
-			"program": "/Users/seshevch/lemin/lem-in",
+			"program": "/Users/seshevch/Lem-in/lem-in",
 			"args": [],
 			"stopAtEntry": false,
-			"cwd": "/Users/seshevch/lemin",
+			"cwd": "/Users/seshevch/Lem-in",
 			"environment": [],
 			"externalConsole": true,
 			"MIMode": "lldb"

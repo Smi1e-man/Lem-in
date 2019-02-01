@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/26 12:42:37 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/01 13:54:12 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/01 18:31:36 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ typedef struct		s_rms
 	}					t_rel;
 
 	struct s_rel		*links;
+
+	struct s_rel		*first_link;
 
 	int				index;
 	struct s_rms	*next;
