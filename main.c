@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/26 12:42:12 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/01 19:10:36 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/02 17:24:36 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,27 +16,27 @@ void		link_save(t_rooms *rm1, t_rooms *ln1)
 {
 	if (rm1->links)
 	{
-		while (rm1->links != NULL)
-			rm1->links = rm1->links->next;
-		rm1->links = (struct s_rel*)malloc(sizeof(struct s_rel));
+		rm1->links->next = (struct s_rel*)malloc(sizeof(struct s_rel));
+		rm1->links = rm1->links->next;
 		rm1->links->link = ln1;
 	}
 	else
 	{
 		rm1->links = (struct s_rel*)malloc(sizeof(struct s_rel));
+		// rm1->first_link = (struct s_rel*)malloc(sizeof(struct s_rel));
 		rm1->links->link = ln1;
 		rm1->first_link = rm1->links;
 	}
 	if (ln1->links)
 	{
-		while (ln1->links != NULL)
-			ln1->links = ln1->links->next;
-		ln1->links = (struct s_rel*)malloc(sizeof(struct s_rel));
+		ln1->links->next = (struct s_rel*)malloc(sizeof(struct s_rel));
+		ln1->links = ln1->links->next;
 		ln1->links->link = rm1;
 	}
 	else
 	{
 		ln1->links = (struct s_rel*)malloc(sizeof(struct s_rel));
+		// ln1->first_link = (struct s_rel*)malloc(sizeof(struct s_rel));
 		ln1->links->link = rm1;
 		ln1->first_link = ln1->links;
 	}
@@ -74,6 +74,7 @@ void		listnew(t_rooms **tmp, char *r, t_lemin *el)
 	list->next = NULL;
 	list->links = NULL;
 	list->first_link = NULL;
+	list->lvl = -1;
 	if ((*tmp))
 	{
 		list->index = (*tmp)->index + 1;
@@ -121,7 +122,7 @@ int			main(void)
 
 	el = (t_lemin*)malloc(sizeof(t_lemin));
 	tmp = NULL;
-	fd = open("f2", O_RDWR);
+	fd = open("f4", O_RDWR);
 	get_next_line(fd, &line);
 	el->ants = ft_atoi(line);
 	if (el->ants <= 0)
@@ -139,19 +140,20 @@ int			main(void)
 		free(line);
 	}
 	tmp = el->rms;
-	while (tmp != NULL)
-	{
-		// ft_printf("r00ms = %s\n", tmp->room);
-		if (tmp->links != NULL)
-		{
-			while (tmp->first_link->link != NULL)
-			{
-				ft_printf("l1nks = %s-%s\n", tmp->room, tmp->first_link->link->room);
-				tmp->first_link->link = tmp->first_link->link->next;
-			}
-		}
-		tmp = tmp->next;
-	}
+	// while (tmp != NULL)
+	// {
+	// 	ft_printf("r00ms = %s\n", tmp->room);
+	// 	if (tmp->links != NULL)
+	// 	{
+	// 		while (tmp->first_link != NULL)
+	// 		{
+	// 			ft_printf("l1nks = %s-%s\n", tmp->room, tmp->first_link->link->room);
+	// 			tmp->first_link = tmp->first_link->next;
+	// 		}
+	// 	}
+	// 	tmp = tmp->next;
+	// }
 	// system("leaks lem-in");
+	lvls(el);
 	return (0);
 }

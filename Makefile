@@ -6,7 +6,7 @@
 #    By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/01/26 12:51:50 by seshevch          #+#    #+#              #
-#    Updated: 2019/02/01 13:54:12 by seshevch         ###   ########.fr        #
+#    Updated: 2019/02/02 12:41:49 by seshevch         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,9 +16,9 @@ LIB = libft/libft.a
 
 FLAGS = -Wall -Wextra -Werror -g
 
-SRCS = main.c
+SRCS = main.c ln_ways.c
 
-OBJ = main.o
+OBJ = main.o ln_ways.o
 
 INCL = ./libft/includes
 

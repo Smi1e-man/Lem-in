@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/26 12:42:37 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/01 18:31:36 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/02 20:01:39 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,6 @@
 /*
 **	struct
 */
-// typedef struct		s_l
-// {
-// 	t_rooms			*link;
-// 	struct s_l		*next;
-
-// }					t_link;
-
 typedef struct		s_rms
 {
 	char			*room;
@@ -37,13 +30,32 @@ typedef struct		s_rms
 	}					t_rel;
 
 	struct s_rel		*links;
-
 	struct s_rel		*first_link;
 
 	int				index;
+
+	int				lvl;
+	int				busy;
+
 	struct s_rms	*next;
 
 }					t_rooms;
+
+typedef struct				s_rms_on_path
+{
+	t_rooms					*room;
+
+	struct s_rms_on_path	*next;
+
+}							t_rms_on_pth;
+
+typedef struct		s_ways
+{
+	t_rms_on_pth	*rms_on_path;
+	
+	struct s_ways	*next;
+
+}					t_ways;
 
 typedef struct		s_lemin
 {
@@ -53,11 +65,13 @@ typedef struct		s_lemin
 	int				end;
 
 	t_rooms			*rms;
+	t_ways			*ways;
 
 }					t_lemin;
 
 /*
 **	lem-in function
 */
+void        lvls(t_lemin    *el);
 
 #endif
