@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/26 12:42:37 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/03 11:47:43 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/03 18:40:52 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,9 @@ typedef struct				s_rms_on_path
 
 typedef struct		s_ways
 {
+	int				lenth;
 	t_rms_on_pth	*rms_on_path;
-	
+
 	struct s_ways	*next;
 
 }					t_ways;
@@ -72,6 +73,6 @@ typedef struct		s_lemin
 /*
 **	lem-in function
 */
-void        lvls(t_lemin    *el);
+void				lvls(t_lemin *el, t_rooms *tmp, int k, int i);
 
 #endif
