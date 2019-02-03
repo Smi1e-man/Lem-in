@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/30 12:58:42 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/02 20:02:19 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/03 12:23:18 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,14 +19,14 @@ void		path_add(t_lemin *el, t_rooms *room_on_path)
 	if (el->ways->rms_on_path)
 	{
 		tmp = (t_rms_on_pth*)malloc(sizeof(t_rms_on_pth));
-		tmp->room = room_on_path;
+		tmp->rm_path = room_on_path;
 		tmp->next = el->ways->rms_on_path;
 		el->ways->rms_on_path = tmp;
 	}
 	else
 	{
 		tmp = (t_rms_on_pth*)malloc(sizeof(t_rms_on_pth));
-		tmp->room = room_on_path;
+		tmp->rm_path = room_on_path;
 		tmp->next = NULL;
 		el->ways->rms_on_path = tmp;
 	}
@@ -38,13 +38,14 @@ void		ways(t_lemin *el)
 	t_rooms		*tmp;
 
 	el->ways = (t_ways*)malloc(sizeof(t_ways));
+	el->ways->next = NULL;
 	tmp = el->rms;
 	while (tmp->index != el->end)
 		tmp = tmp->next;
 	// while (tmp->links) // пока есть комнаты-связи у end
 	// {
 		// ways_add(el)
-		while (tmp->links->link->lvl != 0) // пока lvl комнаты-связи1 не равен нулю
+		while (tmp->links->link != NULL && tmp->links->link->lvl != 0) // пока lvl комнаты-связи1 не равен нулю
 		{
 			path_add(el, tmp->links->link); // ***сохраняем комнату-связь1
 			tmp->links->link->busy = 0; // ставим комнате-связе "занято"
@@ -64,8 +65,19 @@ void		ways(t_lemin *el)
 	*/
 	while (el->ways->rms_on_path)
 	{
-		ft_printf("path = %s", el->ways->rms_on_path->room->room);
+		ft_printf("path = %s\n", el->ways->rms_on_path->rm_path->room);
 		el->ways->rms_on_path = el->ways->rms_on_path->next;
+	}
+}
+
+void		resave_links(t_lemin *el)
+{
+	t_rooms     *tmp;
+
+	tmp = el->rms;
+	while (tmp && (tmp->links = tmp->first_link) == tmp->first_link)
+	{
+		tmp = tmp->next;
 	}
 }
 
@@ -75,6 +87,7 @@ void		lvls(t_lemin *el)
     int         i;
     int         k;
 
+	resave_links(el);
     tmp = el->rms;
     i = 0;
     while (tmp->index != el->start)
@@ -85,7 +98,7 @@ void		lvls(t_lemin *el)
 	while(k > 0 && (tmp = el->rms) == el->rms)
 	{
 		// tmp = el->rms;
-		while (tmp && (tmp->links = tmp->first_link) == tmp->first_link)
+		while (tmp)
 		{
 			if (tmp->lvl == i)
 				while (tmp->first_link)
@@ -106,10 +119,11 @@ void		lvls(t_lemin *el)
     /*
     ** print
     */
-    while (el->rms)
-    {
-        ft_printf("room - %s lvl - %d\n", el->rms->room, el->rms->lvl);
-        el->rms = el->rms->next;
-    }
+	tmp = el->rms;
+	while (tmp)
+	{
+		ft_printf("room - %s lvl - %d\n", tmp->room, tmp->lvl);
+		tmp = tmp->next;
+	}
 	ways(el);
 }

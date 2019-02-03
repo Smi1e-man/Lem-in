@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/26 12:42:12 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/02 17:24:36 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/03 12:02:52 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,7 +122,7 @@ int			main(void)
 
 	el = (t_lemin*)malloc(sizeof(t_lemin));
 	tmp = NULL;
-	fd = open("f4", O_RDWR);
+	fd = open("f3", O_RDWR);
 	get_next_line(fd, &line);
 	el->ants = ft_atoi(line);
 	if (el->ants <= 0)
@@ -139,7 +139,7 @@ int			main(void)
 		line[0] != '#' ? link_find(line, tmp, tmp) : 0;
 		free(line);
 	}
-	tmp = el->rms;
+	// tmp = el->rms;
 	// while (tmp != NULL)
 	// {
 	// 	ft_printf("r00ms = %s\n", tmp->room);

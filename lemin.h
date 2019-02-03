@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/26 12:42:37 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/02 20:01:39 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/03 11:47:43 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ typedef struct		s_rms
 
 typedef struct				s_rms_on_path
 {
-	t_rooms					*room;
+	t_rooms					*rm_path;
 
 	struct s_rms_on_path	*next;
 
