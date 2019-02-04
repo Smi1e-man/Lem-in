@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/26 12:42:12 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/03 18:40:32 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/04 19:01:14 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,40 +14,33 @@
 
 void		link_save(t_rooms *rm1, t_rooms *ln1)
 {
+	t_links		*tmp;
+	t_links		*pmt;
+
+	tmp = (t_links*)malloc(sizeof(t_links));
+	tmp->room = ln1;
 	if (rm1->links)
-	{
-		rm1->links->next = (struct s_rel*)malloc(sizeof(struct s_rel));
-		rm1->links = rm1->links->next;
-		rm1->links->link = ln1;
-	}
+		tmp->next = rm1->links;
 	else
-	{
-		rm1->links = (struct s_rel*)malloc(sizeof(struct s_rel));
-		// rm1->first_link = (struct s_rel*)malloc(sizeof(struct s_rel));
-		rm1->links->link = ln1;
-		rm1->first_link = rm1->links;
-	}
+		tmp->next = NULL;
+	rm1->links = tmp;
+	pmt = (t_links*)malloc(sizeof(t_links));
+	pmt->room = rm1;
 	if (ln1->links)
-	{
-		ln1->links->next = (struct s_rel*)malloc(sizeof(struct s_rel));
-		ln1->links = ln1->links->next;
-		ln1->links->link = rm1;
-	}
+		pmt->next = ln1->links;
 	else
-	{
-		ln1->links = (struct s_rel*)malloc(sizeof(struct s_rel));
-		// ln1->first_link = (struct s_rel*)malloc(sizeof(struct s_rel));
-		ln1->links->link = rm1;
-		ln1->first_link = ln1->links;
-	}
-	
+		pmt->next = NULL;
+	ln1->links = pmt;
 }
 
 void		link_find(char	*l, t_rooms *tmp, t_rooms *start)
 {
+	char	**str;
+
+	str = ft_strsplit(l, '-');
 	while (tmp)
 	{
-		if (ft_strcmp(ft_strsub(l, 0, ft_strchr(l, '-') - l), tmp->room) == 0)
+		if (ft_strcmp(str[0], tmp->name) == 0)
 			break ;
 		tmp = tmp->next;
 	}
@@ -55,26 +48,32 @@ void		link_find(char	*l, t_rooms *tmp, t_rooms *start)
 	{
 		while (start)
 		{
-			if (ft_strcmp(ft_strsub(l, ft_strchr(l, '-') - l + 1, ft_strlen(l)),
-			start->room) == 0)
+			if (ft_strcmp(str[1], start->name) == 0)
 				break ;
 			start = start->next;
 		}
 		if (start != NULL)
+		{
 			link_save(tmp, start);
+		}
 	}
+	free(str[0]);
+	free(str[1]);
+	free(str);
 }
 
-void		listnew(t_rooms **tmp, char *r, t_lemin *el)
+void		room_add(t_rooms **tmp, char **r, t_lemin *el)
 {
 	t_rooms	*list;
 
 	list = (t_rooms*)malloc(sizeof(t_rooms));
-	list->room = ft_strdup(r);
+	list->name = ft_strdup(r[0]);
 	list->next = NULL;
 	list->links = NULL;
-	list->first_link = NULL;
 	list->lvl = -1;
+	list->busy = -1;
+	list->xy[0] = ft_atoi(r[1]);
+	list->xy[1] = ft_atoi(r[2]);
 	if ((*tmp))
 	{
 		list->index = (*tmp)->index + 1;
@@ -89,10 +88,11 @@ void		listnew(t_rooms **tmp, char *r, t_lemin *el)
 	}
 }
 
-char		*room_save(t_rooms **tmp, t_lemin *el, char *l, int fd)
+int			room_save(t_rooms **tmp, t_lemin *el, char *l)
 {
-	get_next_line(fd, &l);
-	while ((ft_strchr(l, '-')) == 0)
+	char	**str;
+
+	if ((ft_strchr(l, '-')) == 0)
 	{
 		if (l[1] == '#')
 		{
@@ -104,13 +104,18 @@ char		*room_save(t_rooms **tmp, t_lemin *el, char *l, int fd)
 		else if (l[0] != '#')
 		{
 			if ((ft_strchr(l, ' ') != 0))
-				listnew(tmp, ft_strsub(l, 0, ft_strchr(l, ' ') - l), el);
+			{
+				str = ft_strsplit(l, ' ');
+				room_add(tmp, str, el);
+				free(str[0]);
+				free(str[1]);
+				free(str[2]);
+				free(str);
+			}
 		}
-		free(l);
-		get_next_line(fd, &l);
+		return (1);
 	}
-	(*tmp)->next = NULL;
-	return (l);
+	return (0);
 }
 
 int			main(void)
@@ -123,38 +128,31 @@ int			main(void)
 	el = (t_lemin*)malloc(sizeof(t_lemin));
 	el->ways = NULL;
 	tmp = NULL;
-	fd = open("f3", O_RDWR);
+	fd = open("f1", O_RDWR);
 	get_next_line(fd, &line);
 	el->ants = ft_atoi(line);
 	if (el->ants <= 0)
 		return (0);
 	free(line);
-	line = room_save(&tmp, el, line, fd);
-	// free(tmp);
-	tmp = el->rms;
-	link_find(line, tmp, tmp);
-	// printf("%lu,/n %lu,/n %lu,/n", sizeof(t_lemin), sizeof(t_rooms), sizeof(struct s_rel));
-	// free(line);
 	while (get_next_line(fd, &line) == 1)
 	{
-		line[0] != '#' ? link_find(line, tmp, tmp) : 0;
+		if (room_save(&tmp, el, line) == 1)
+			;
+		else if (line[0] != '#')
+			link_find(line, el->rms, el->rms);
 		free(line);
 	}
-	// tmp = el->rms;
-	// while (tmp != NULL)
+	// while (el->rms)
 	// {
-	// 	ft_printf("r00ms = %s\n", tmp->room);
-	// 	if (tmp->links != NULL)
+	// 	ft_printf("room %s\n", el->rms->name);
+	// 	while (el->rms->links)
 	// 	{
-	// 		while (tmp->first_link != NULL)
-	// 		{
-	// 			ft_printf("l1nks = %s-%s\n", tmp->room, tmp->first_link->link->room);
-	// 			tmp->first_link = tmp->first_link->next;
-	// 		}
+	// 		ft_printf("room = %s links = %s\n", el->rms->name, el->rms->links->room->name);
+	// 		el->rms->links = el->rms->links->next;
 	// 	}
-	// 	tmp = tmp->next;
+	// 	el->rms = el->rms->next;
 	// }
-	// system("leaks lem-in");
-	lvls(el, tmp, 1, 0);
+	lvls(el, el->rms, 1, 0);
+	// system("leaks -q lem-in");
 	return (0);
 }

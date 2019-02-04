@@ -6,177 +6,160 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/30 12:58:42 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/03 18:41:34 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/04 19:18:10 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lemin.h"
 
-void		path_add(t_lemin *el, t_rooms *room_on_path)
+void		path_ways_add(t_lemin *el, t_rooms *room_on_path)
 {
-	t_rms_on_pth	*tmp;
+	t_path			*new_path;
+	t_ways			*tmp;
 
-	if (el->ways->rms_on_path)
-	{
-		tmp = (t_rms_on_pth*)malloc(sizeof(t_rms_on_pth));
-		tmp->rm_path = room_on_path;
-		tmp->next = el->ways->rms_on_path;
-		el->ways->rms_on_path = tmp;
-	}
+	new_path = (t_path*)malloc(sizeof(t_path));
+	new_path->room = room_on_path;
+	new_path->next = NULL;
+	tmp = el->ways;
+	while (tmp && tmp->next)
+		tmp = tmp->next;
+	if (tmp->path)
+		new_path->next = tmp->path;
 	else
-	{
-		tmp = (t_rms_on_pth*)malloc(sizeof(t_rms_on_pth));
-		tmp->rm_path = room_on_path;
-		tmp->next = NULL;
-		el->ways->rms_on_path = tmp;
-	}
-	el->ways->lenth += 1;
+		new_path->next = NULL;
+	tmp->path = new_path;
+	tmp->length += 1;
 }
 
-t_rooms		*find_min_links(t_lemin *el, t_rooms *end)
+t_rooms		*find_min_links(t_rooms *end, t_rooms *tmp)
 {
-	int		lvl;
-	int		index;
-	t_rooms	*tmp;
+	int			lvl;
+	int			index;
+	t_links		*links;
 
 	lvl = -1;
 	index = -1;
-	tmp = el->rms;
-	end->first_link = end->links;
-	while (end->first_link)
+	links = end->links;
+	while (links)
 	{
-		if ((lvl == -1 || end->first_link->link->lvl < lvl) &&
-		end->first_link->link->busy != 0)
+		if ((lvl == -1 || links->room->lvl < lvl) && links->room->busy == 1)
 		{
-			index = end->first_link->link->index;
-			lvl = end->first_link->link->lvl;
+			index = links->room->index;
+			lvl = links->room->lvl;
 		}
-		end->first_link = end->first_link->next;
+		links = links->next;
 	}
 	while (tmp && tmp->index != index)
 		tmp = tmp->next;
 	return (tmp);
 }
 
-void		ways_add(t_lemin *el)
+void		dell_n_add_way(t_ways *new_way, t_ways *tmp, t_lemin *el, int v)
 {
-	t_ways	*new_way;
-
-	new_way = (t_ways*)malloc(sizeof(t_ways));
-	new_way->rms_on_path = NULL;
-	if (!el->ways)
+	if (v == 1)
 	{
+		new_way = (t_ways*)malloc(sizeof(t_ways));
+		new_way->path = NULL;
+		new_way->length = 0;
 		new_way->next = NULL;
-		new_way->lenth = 0;
+		while (tmp && tmp->next)
+			tmp = tmp->next;
+		if (el->ways)
+			tmp->next = new_way;
+		else
+			el->ways = new_way;	
 	}
 	else
-		new_way->next = el->ways;
-	el->ways = new_way;
+	{
+		while(tmp->next->next)
+			tmp = tmp->next;
+		tmp->next = NULL;
+	}
 }
 
-void		ways(t_lemin *el)
+void		ways(t_lemin *el, t_rooms *end)
 {
 	t_rooms		*tmp;
-	t_rooms		*end;
-	t_ways	*print;
 
-	// el->ways = (t_ways*)malloc(sizeof(t_ways));
-	// el->ways->next = NULL;
-	end = el->rms;
-	while (end->index != el->end) // находим end
+	while (end->index != el->end)
 		end = end->next;
-	while ((tmp = find_min_links(el, end)) != NULL) // пока есть комнаты-связи у end
+	while ((tmp = find_min_links(end, el->rms)) != NULL)
 	{
-		ways_add(el);
-		// tmp = find_min_links(end);
-		while (tmp != NULL && tmp->lvl != 0) // пока lvl комнаты-связи1 не равен нулю
+		dell_n_add_way(NULL, el->ways, el, 1);
+		path_ways_add(el, end);
+		while (tmp != NULL && tmp->lvl != 0)
 		{
-			path_add(el, tmp); // ***сохраняем комнату-связь1
-			// el->ways->lenth += 1;
-			tmp->busy = 0; // ставим комнате-связе "занято"
-			while (tmp->links) // пока у комнаты-связи1 есть комнаты-связи2
+			path_ways_add(el, tmp);
+			tmp->busy = 0;
+			while (tmp->links)
 			{
-				if (tmp->lvl - tmp->links->link->lvl == 1 &&
-					tmp->links->link->busy == 1) // если разница между lvl комнатами-связями равна 1 && комната "свободна"
+				if (tmp->lvl - tmp->links->room->lvl == 1 &&
+					tmp->links->room->busy == 1)
 					break ;
 				tmp->links = tmp->links->next;
 			}
 			if (tmp->links != NULL)
-				tmp = tmp->links->link; // присваиваем комнате-связе1 = подходящую комнату-связь2(передвигаемся по пути)
+				tmp = tmp->links->room;
 			else
+			{
+				dell_n_add_way(NULL, el->ways, el, 0);
 				break ;
+			}
 		}
-	// 	tmp->links = tmp->links->next; // передвигаемся по комнатам-связям end
-	}
-	/*
-	** print
-	*/
-	print = el->ways;
-	t_rms_on_pth *p;
-	while (print)
-	{
-		ft_printf("lenth way = %d\n", print->lenth);
-		p = print->rms_on_path;
-		while (p)
-		{
-			ft_printf(" path = %s\n", p->rm_path->room);
-			p = p->next;
-		}
-		print = print->next;
+		if (tmp && tmp->lvl == 0)
+			path_ways_add(el, tmp);
 	}
 }
 
-void		resave_links(t_lemin *el)
-{
-	t_rooms     *tmp;
-
-	tmp = el->rms;
-	while (tmp && (tmp->links = tmp->first_link) == tmp->first_link)
-		tmp = tmp->next;
-}
 
 void		lvls(t_lemin *el, t_rooms *tmp, int k, int i)
 {
-    // t_rooms     *tmp;
-    // int         i;
-    // int         k;
+	t_links		*links;
 
-	resave_links(el);
-    tmp = el->rms;
-    // i = 0;
     while (tmp->index != el->start)
 		tmp = tmp->next;
     tmp->lvl = 0;
     tmp->busy = 1;
-    // k = 1;
 	while(k > 0 && (tmp = el->rms) == el->rms)
 	{
 		while (tmp)
 		{
-			if (tmp->lvl == i)
-				while (tmp->first_link)
+			if (tmp->lvl == i && (links = tmp->links) == tmp->links)
+				while (links)
 				{
-					if (tmp->first_link->link->busy != 1)
+					if (links->room->busy != 1)
 					{
-						tmp->first_link->link->lvl = i + 1;
-							tmp->first_link->link->busy = 1;
+						links->room->lvl = i + 1;
+						links->room->busy = 1;
 						k++;
 					}
-					tmp->first_link = tmp->first_link->next;
+					links = links->next;
 				}
 			tmp = tmp->next;
 		}
 		++i;
 		k = k == 1 ? -1 : 1;
 	}
+	ways(el, el->rms);
     /*
     ** print
-    */
-	// tmp = el->rms;
-	// while (tmp)
-	// {
-	// 	ft_printf("room - %s lvl - %d\n", tmp->room, tmp->lvl);
-	// 	tmp = tmp->next;
-	// }
-	ways(el);
+    
+	tmp = el->rms;
+	while (tmp)
+	{
+		ft_printf("room - %s lvl - %d\n", tmp->name, tmp->lvl);
+		tmp = tmp->next;
+	}
+	*/
+	while(el->ways)
+	{
+		ft_printf("length = %d\n", el->ways->length);
+		while (el->ways->path)
+		{
+			ft_printf("room = %s\n", el->ways->path->room->name);
+			el->ways->path = el->ways->path->next;
+		}
+		el->ways = el->ways->next;
+	}
+
 }

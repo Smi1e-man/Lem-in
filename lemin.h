@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/26 12:42:37 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/03 18:40:52 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/04 14:12:42 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,57 +18,52 @@
 /*
 **	struct
 */
-typedef struct		s_rms
+typedef struct s_links			t_links;
+typedef struct s_rms			t_rooms;
+typedef struct s_path			t_path;
+typedef struct s_ways			t_ways;
+typedef struct s_lemin			t_lemin;
+
+struct				s_links
 {
-	char			*room;
+	t_rooms			*room;
+	struct s_links	*next;
+};
 
-	struct				s_rel
-	{
-		struct s_rms	*link;
-		struct s_rel	*next;
-
-	}					t_rel;
-
-	struct s_rel		*links;
-	struct s_rel		*first_link;
-
+struct				s_rms
+{
+	char			*name;
+	t_links			*links;
 	int				index;
-
 	int				lvl;
 	int				busy;
+	int				xy[2];
 
 	struct s_rms	*next;
+};
 
-}					t_rooms;
-
-typedef struct				s_rms_on_path
+struct				s_path
 {
-	t_rooms					*rm_path;
+	t_rooms			*room;
+	struct s_path	*next;
+};
 
-	struct s_rms_on_path	*next;
-
-}							t_rms_on_pth;
-
-typedef struct		s_ways
+struct				s_ways
 {
-	int				lenth;
-	t_rms_on_pth	*rms_on_path;
+	int				length;
+	t_path			*path;
 
 	struct s_ways	*next;
+};
 
-}					t_ways;
-
-typedef struct		s_lemin
+struct				s_lemin
 {
 	int				ants;
-
 	int				start;
 	int				end;
-
 	t_rooms			*rms;
 	t_ways			*ways;
-
-}					t_lemin;
+};
 
 /*
 **	lem-in function
