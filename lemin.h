@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/26 12:42:37 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/04 14:12:42 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/05 16:23:56 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,15 @@ struct				s_rms
 struct				s_path
 {
 	t_rooms			*room;
+	int				busy;			
 	struct s_path	*next;
 };
 
 struct				s_ways
 {
 	int				length;
+	int				ants;
+	int				a_on_th;
 	t_path			*path;
 
 	struct s_ways	*next;
@@ -69,5 +72,6 @@ struct				s_lemin
 **	lem-in function
 */
 void				lvls(t_lemin *el, t_rooms *tmp, int k, int i);
+void				ways_ants(t_lemin *el);
 
 #endif

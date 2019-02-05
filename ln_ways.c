@@ -6,19 +6,20 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/30 12:58:42 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/04 19:18:10 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/05 17:18:21 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lemin.h"
 
-void		path_ways_add(t_lemin *el, t_rooms *room_on_path)
+void		path_add(t_lemin *el, t_rooms *room_on_path)
 {
 	t_path			*new_path;
 	t_ways			*tmp;
 
 	new_path = (t_path*)malloc(sizeof(t_path));
 	new_path->room = room_on_path;
+	new_path->busy = 0;
 	new_path->next = NULL;
 	tmp = el->ways;
 	while (tmp && tmp->next)
@@ -60,7 +61,9 @@ void		dell_n_add_way(t_ways *new_way, t_ways *tmp, t_lemin *el, int v)
 	{
 		new_way = (t_ways*)malloc(sizeof(t_ways));
 		new_way->path = NULL;
-		new_way->length = 0;
+		new_way->length = -2;
+		new_way->ants = 0;
+		new_way->a_on_th = 0;
 		new_way->next = NULL;
 		while (tmp && tmp->next)
 			tmp = tmp->next;
@@ -86,10 +89,10 @@ void		ways(t_lemin *el, t_rooms *end)
 	while ((tmp = find_min_links(end, el->rms)) != NULL)
 	{
 		dell_n_add_way(NULL, el->ways, el, 1);
-		path_ways_add(el, end);
+		path_add(el, end);
 		while (tmp != NULL && tmp->lvl != 0)
 		{
-			path_ways_add(el, tmp);
+			path_add(el, tmp);
 			tmp->busy = 0;
 			while (tmp->links)
 			{
@@ -107,7 +110,7 @@ void		ways(t_lemin *el, t_rooms *end)
 			}
 		}
 		if (tmp && tmp->lvl == 0)
-			path_ways_add(el, tmp);
+			path_add(el, tmp);
 	}
 }
 
@@ -141,6 +144,7 @@ void		lvls(t_lemin *el, t_rooms *tmp, int k, int i)
 		k = k == 1 ? -1 : 1;
 	}
 	ways(el, el->rms);
+	ways_ants(el);
     /*
     ** print
     
@@ -150,10 +154,11 @@ void		lvls(t_lemin *el, t_rooms *tmp, int k, int i)
 		ft_printf("room - %s lvl - %d\n", tmp->name, tmp->lvl);
 		tmp = tmp->next;
 	}
-	*/
+	
 	while(el->ways)
 	{
-		ft_printf("length = %d\n", el->ways->length);
+		ft_printf("\nlength = %d\n", el->ways->length);
+		ft_printf("Ants = %d\n", el->ways->ants);
 		while (el->ways->path)
 		{
 			ft_printf("room = %s\n", el->ways->path->room->name);
@@ -161,5 +166,5 @@ void		lvls(t_lemin *el, t_rooms *tmp, int k, int i)
 		}
 		el->ways = el->ways->next;
 	}
-
+	*/
 }
