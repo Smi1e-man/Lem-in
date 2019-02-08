@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/05 08:58:50 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/08 12:20:07 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/08 18:42:33 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,11 +65,10 @@ void	push_ants(t_lemin *el)
 
 	b = 0;
 	i = 1;
-	ft_printf("\n");
+	ft_printf("\n\n");
 	while (el->ants > 0 && (ways = el->ways) == el->ways)
 	{
 		b++;
-		ft_printf("\n");
 		while (ways)
 		{
 			go_ant(el, ways, ways->a_on_th + 1);
@@ -80,6 +79,7 @@ void	push_ants(t_lemin *el)
 			}
 			ways = ways->next;
 		}
+		ft_printf("\n");
 	}
 }
 
@@ -99,7 +99,10 @@ void	free_ways(t_lemin *el)
 	path_head = way->path->next;
 	free(way->path);
 	way->path = path_head;
-	way->next = NULL;
+	while (way->next != NULL)
+	{
+		dell_way(way);
+	}
 }
 
 void	ways_ants(t_lemin *el)

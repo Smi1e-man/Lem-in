@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/26 12:42:37 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/07 15:08:17 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/08 18:55:39 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ struct				s_rms
 	int				index;
 	int				lvl;
 	int				busy;
-	int				xy[2];
 
 	struct s_rms	*next;
 };
@@ -62,6 +61,9 @@ struct				s_ways
 
 struct				s_lemin
 {
+	char			*prnt;
+	t_rooms			*start_str;
+
 	int				ants;
 	int				start;
 	int				end;
@@ -73,6 +75,15 @@ struct				s_lemin
 **	lem-in function
 */
 void				lvls(t_lemin *el, t_rooms *tmp, int k, int i);
+void				ways(t_lemin *el, t_rooms *end);
 void				ways_ants(t_lemin *el);
+void				add_way(t_lemin *el, t_ways *tmp);
+void				dell_way(t_ways *tmp);
+void				validate_room(char	*line, char **str, t_rooms *tmp);
+void				validate_link(char **str, t_rooms *room_head);
+int					ft_numbs(char *str);
+void				ft_prnt_n_join(t_lemin *el, char *part);
+void				nul_struct(t_lemin *el);
+void				ft_error(void);
 
 #endif

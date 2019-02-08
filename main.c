@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/26 12:42:12 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/08 12:17:08 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/08 19:05:16 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,6 +38,7 @@ void		link_find(char *l, t_rooms *tmp, t_rooms *start)
 	char	**str;
 
 	str = ft_strsplit(l, '-');
+	validate_link(str, tmp);
 	while (tmp)
 	{
 		if (ft_strcmp(str[0], tmp->name) == 0)
@@ -53,27 +54,21 @@ void		link_find(char *l, t_rooms *tmp, t_rooms *start)
 			start = start->next;
 		}
 		if (start != NULL)
-		{
 			link_save(tmp, start);
-		}
+		free(str[0]);
+		free(str[1]);
+		free(str);
 	}
-	free(str[0]);
-	free(str[1]);
-	free(str);
 }
 
-void		room_add(t_rooms **tmp, char **r, t_lemin *el)
+void		room_add(t_rooms **tmp, char **r, t_lemin *el, t_rooms *list)
 {
-	t_rooms	*list;
-
 	list = (t_rooms*)malloc(sizeof(t_rooms));
 	list->name = ft_strdup(r[0]);
 	list->next = NULL;
 	list->links = NULL;
 	list->lvl = -1;
 	list->busy = -1;
-	list->xy[0] = ft_atoi(r[1]);
-	list->xy[1] = ft_atoi(r[2]);
 	if ((*tmp))
 	{
 		list->index = (*tmp)->index + 1;
@@ -85,6 +80,12 @@ void		room_add(t_rooms **tmp, char **r, t_lemin *el)
 		list->index = 0;
 		*tmp = list;
 		el->rms = *tmp;
+	}
+	if ((*tmp)->index == el->start)
+	{
+		el->start_str = *tmp;
+		el->start_str->busy = 1;
+		el->start_str->lvl = 0;
 	}
 }
 
@@ -103,48 +104,44 @@ int			room_save(t_rooms **tmp, t_lemin *el, char *l)
 		}
 		else if (l[0] != '#')
 		{
-			if ((ft_strchr(l, ' ') != 0))
-			{
-				str = ft_strsplit(l, ' ');
-				room_add(tmp, str, el);
-				free(str[0]);
-				free(str[1]);
-				free(str[2]);
-				free(str);
-			}
+			str = ft_strsplit(l, ' ');
+			validate_room(l, str, el->rms);
+			room_add(tmp, str, el, NULL);
+			free(str[0]);
+			free(str[1]);
+			free(str[2]);
+			free(str);
 		}
 		return (1);
 	}
+	el->start == -1 || el->end == -1 ? ft_error() : 0;
 	return (0);
 }
 
 int			main(void)
 {
-	int		fd;
 	t_rooms	*tmp;
 	t_lemin	*el;
 	char	*line;
 
 	el = (t_lemin*)malloc(sizeof(t_lemin));
-	el->ways = NULL;
+	nul_struct(el);
 	tmp = NULL;
-	fd = open("f3", O_RDWR);
-	get_next_line(fd, &line);
+	get_next_line(0, &line);
 	el->ants = ft_atoi(line);
-	if (el->ants <= 0)
-		return (0);
-	ft_printf("%s", line);
+	el->ants <= 0 || line[0] == '\0' || ft_numbs(line) == 0 ? ft_error() : 0;
+	el->prnt = ft_strjoin("", line);
 	free(line);
-	while (get_next_line(fd, &line) == 1)
+	while (get_next_line(0, &line) == 1)
 	{
-		ft_printf("\n%s", line);
+		ft_prnt_n_join(el, line);
 		if (room_save(&tmp, el, line) == 1)
 			;
 		else if (line[0] != '#')
 			link_find(line, el->rms, el->rms);
 		free(line);
 	}
-	lvls(el, el->rms, 1, 0);
-	system("leaks -q lem-in");
+	ft_printf("%s", el->prnt);
+	lvls(el, el->start_str, 1, 0);
 	return (0);
 }
