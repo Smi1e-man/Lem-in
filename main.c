@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/26 12:42:12 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/05 17:23:56 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/08 12:17:08 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void		link_save(t_rooms *rm1, t_rooms *ln1)
 	ln1->links = pmt;
 }
 
-void		link_find(char	*l, t_rooms *tmp, t_rooms *start)
+void		link_find(char *l, t_rooms *tmp, t_rooms *start)
 {
 	char	**str;
 
@@ -128,31 +128,23 @@ int			main(void)
 	el = (t_lemin*)malloc(sizeof(t_lemin));
 	el->ways = NULL;
 	tmp = NULL;
-	fd = open("f1", O_RDWR);
+	fd = open("f3", O_RDWR);
 	get_next_line(fd, &line);
 	el->ants = ft_atoi(line);
 	if (el->ants <= 0)
 		return (0);
+	ft_printf("%s", line);
 	free(line);
 	while (get_next_line(fd, &line) == 1)
 	{
+		ft_printf("\n%s", line);
 		if (room_save(&tmp, el, line) == 1)
 			;
 		else if (line[0] != '#')
 			link_find(line, el->rms, el->rms);
 		free(line);
 	}
-	// while (el->rms)
-	// {
-	// 	ft_printf("room %s\n", el->rms->name);
-	// 	while (el->rms->links)
-	// 	{
-	// 		ft_printf("room = %s links = %s\n", el->rms->name, el->rms->links->room->name);
-	// 		el->rms->links = el->rms->links->next;
-	// 	}
-	// 	el->rms = el->rms->next;
-	// }
 	lvls(el, el->rms, 1, 0);
-	// system("leaks -q lem-in");
+	system("leaks -q lem-in");
 	return (0);
 }

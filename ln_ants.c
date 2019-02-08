@@ -6,13 +6,13 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/05 08:58:50 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/05 17:33:51 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/08 12:20:07 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lemin.h"
 
-void	first_ant(t_ways *way)
+void	first_ant(t_ways *way, int ant)
 {
 	t_path	*path;
 
@@ -26,24 +26,26 @@ void	first_ant(t_ways *way)
 	if (path)
 	{
 		path->busy = 1;
+		path->numb_ant = ant;
+		ft_printf("L%d-%s ", path->numb_ant, path->room->name);
 		way->a_on_th += 1;
 	}
 }
 
-void	go_ant(t_lemin *el, t_ways *way)
+void	go_ant(t_lemin *el, t_ways *way, int a_on_th)
 {
 	t_path	*path;
-	int		a_on_th;
 
 	path = way->path;
-	a_on_th = way->a_on_th;
-	while (a_on_th > 0 && (path = way->path) == way->path)
+	while (--a_on_th > 0 && (path = way->path) == way->path)
 	{
 		while (path && path->busy != 1)
 			path = path->next;
 		while (path->next && path->busy == 1 && path->next->busy == 1)
 			path = path->next;
 		path->busy = 0;
+		path->next->numb_ant = path->numb_ant;
+		ft_printf("L%d-%s ", path->next->numb_ant, path->next->room->name);
 		if (path->next->next == NULL)
 		{
 			el->ants -= 1;
@@ -52,69 +54,65 @@ void	go_ant(t_lemin *el, t_ways *way)
 		}
 		else
 			path->next->busy = 1;
-		a_on_th--;
 	}
 }
 
 void	push_ants(t_lemin *el)
 {
 	t_ways	*ways;
-	t_path	*path;
+	int		b;
 	int		i;
 
-	i = 0;
+	b = 0;
+	i = 1;
+	ft_printf("\n");
 	while (el->ants > 0 && (ways = el->ways) == el->ways)
 	{
+		b++;
+		ft_printf("\n");
 		while (ways)
 		{
-			go_ant(el, ways);
+			go_ant(el, ways, ways->a_on_th + 1);
 			if (ways->a_on_th != ways->ants)
-				first_ant(ways);
-			ways = ways->next;
-		}
-		ways = el->ways;
-		i++;
-		while (ways)
-		{
-			path = ways->path;
-			ft_printf("|step = %d|   ", i);
-			while (path)
 			{
-				if (path->busy == 1)
-					ft_printf("Ant in room = %s  ", path->room->name);
-				path = path->next;
+				first_ant(ways, i);
+				i++;
 			}
 			ways = ways->next;
 		}
-		ft_printf("\n\n");
 	}
 }
 
 void	free_ways(t_lemin *el)
 {
 	t_ways	*way;
+	t_path	*path_head;
 
 	way = el->ways;
 	while (way->next && way->next->ants != 0)
 	{
-		way->path = way->path->next;
+		path_head = way->path->next;
+		free(way->path);
+		way->path = path_head;
 		way = way->next;
 	}
-	way->path = way->path->next;
+	path_head = way->path->next;
+	free(way->path);
+	way->path = path_head;
 	way->next = NULL;
 }
 
-void    ways_ants(t_lemin *el)
+void	ways_ants(t_lemin *el)
 {
-    int     ants;
-    t_ways  *ways;
+	int		ants;
+	t_ways	*ways;
 
-    ants = el->ants;
-    while (ants > 0 && (ways = el->ways) == el->ways)
-    {
+	ants = el->ants;
+	while (ants > 0 && (ways = el->ways) == el->ways)
+	{
 		while (ways)
 		{
-			if (!ways->next || ((ways->length + 1) <= (ways->next->length + 1)))
+			if (!ways->next || ((ways->length) <= (ways->next->length)))
 				break ;
 			ways = ways->next;
 		}
