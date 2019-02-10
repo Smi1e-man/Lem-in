@@ -6,13 +6,13 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/26 12:42:12 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/08 19:05:16 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/10 14:40:11 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lemin.h"
 
-void		link_save(t_rooms *rm1, t_rooms *ln1)
+void		link_save(t_rooms *rm1, t_rooms *ln1, t_lemin *el)
 {
 	t_links		*tmp;
 	t_links		*pmt;
@@ -31,9 +31,10 @@ void		link_save(t_rooms *rm1, t_rooms *ln1)
 	else
 		pmt->next = NULL;
 	ln1->links = pmt;
+	el->lnk++;
 }
 
-void		link_find(char *l, t_rooms *tmp, t_rooms *start)
+void		link_find(t_lemin *el, char *l, t_rooms *tmp, t_rooms *start)
 {
 	char	**str;
 
@@ -54,7 +55,7 @@ void		link_find(char *l, t_rooms *tmp, t_rooms *start)
 			start = start->next;
 		}
 		if (start != NULL)
-			link_save(tmp, start);
+			link_save(tmp, start, el);
 		free(str[0]);
 		free(str[1]);
 		free(str);
@@ -83,10 +84,11 @@ void		room_add(t_rooms **tmp, char **r, t_lemin *el, t_rooms *list)
 	}
 	if ((*tmp)->index == el->start)
 	{
-		el->start_str = *tmp;
-		el->start_str->busy = 1;
-		el->start_str->lvl = 0;
+		el->s_str = *tmp;
+		el->s_str->busy = 1;
+		el->s_str->lvl = 0;
 	}
+	el->end_str = (*tmp)->index == el->end ? *tmp : 0;
 }
 
 int			room_save(t_rooms **tmp, t_lemin *el, char *l)
@@ -114,7 +116,7 @@ int			room_save(t_rooms **tmp, t_lemin *el, char *l)
 		}
 		return (1);
 	}
-	el->start == -1 || el->end == -1 ? ft_error() : 0;
+	el->start == -1 || el->end == -1 || el->start == el->end ? ft_error() : 0;
 	return (0);
 }
 
@@ -128,8 +130,8 @@ int			main(void)
 	nul_struct(el);
 	tmp = NULL;
 	get_next_line(0, &line);
+	!line || line[0] == '\0' || ft_numbs(line) == 0 ? ft_error() : 0;
 	el->ants = ft_atoi(line);
-	el->ants <= 0 || line[0] == '\0' || ft_numbs(line) == 0 ? ft_error() : 0;
 	el->prnt = ft_strjoin("", line);
 	free(line);
 	while (get_next_line(0, &line) == 1)
@@ -138,10 +140,11 @@ int			main(void)
 		if (room_save(&tmp, el, line) == 1)
 			;
 		else if (line[0] != '#')
-			link_find(line, el->rms, el->rms);
+			link_find(el, line, el->rms, el->rms);
 		free(line);
 	}
-	ft_printf("%s", el->prnt);
-	lvls(el, el->start_str, 1, 0);
+	el->start == -1 || el->end == -1 || el->start == el->end ? ft_error() : 0;
+	!el->s_str || !el->end || el->lnk == 0 || el->ants <= 0 ? ft_error() : 0;
+	lvls(el, el->s_str, 1, 0);
 	return (0);
 }

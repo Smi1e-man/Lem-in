@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/08 13:55:21 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/08 18:51:36 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/10 14:22:05 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 void	ft_error(void)
 {
 	ft_printf("ERROR\n");
-	system("leaks -q lem-in");
 	exit(1);
 }
 

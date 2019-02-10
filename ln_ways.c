@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/30 12:58:42 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/08 18:42:25 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/10 14:27:51 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,10 +85,9 @@ void		dell_way(t_ways *tmp)
 	tmp->next = NULL;
 }
 
-void		ways(t_lemin *el, t_rooms *end)
+void		ways(t_lemin *el, t_rooms *end, t_rooms *room_min_lvl)
 {
 	t_rooms		*tmp;
-	t_rooms		*room_min_lvl;
 
 	while (end->index != el->end)
 		end = end->next;
@@ -109,7 +108,8 @@ void		ways(t_lemin *el, t_rooms *end)
 				break ;
 			}
 		}
-		if (tmp && tmp->lvl == 0)
-			path_add(el, tmp);
+		tmp && tmp->lvl == 0 ? path_add(el, tmp) : 0;
+		if (el->ways->length == 0)
+			break ;
 	}
 }

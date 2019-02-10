@@ -6,29 +6,35 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/05 08:58:50 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/08 18:42:33 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/10 14:31:45 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lemin.h"
 
-void	first_ant(t_ways *way, int ant)
+void	first_ant(t_lemin *el, t_ways *way, int ant)
 {
 	t_path	*path;
 
 	path = way->path;
-	while (path)
-	{
-		if (path->busy == 0)
-			break ;
-		path = path->next;
-	}
 	if (path)
 	{
-		path->busy = 1;
-		path->numb_ant = ant;
-		ft_printf("L%d-%s ", path->numb_ant, path->room->name);
-		way->a_on_th += 1;
+		if (path->room->index != el->end)
+		{
+			path->busy = 1;
+			path->numb_ant = ant;
+			ft_printf("L%d-%s ", path->numb_ant, path->room->name);
+			way->a_on_th += 1;
+		}
+		else
+		{
+			while (el->ants)
+			{
+				path->numb_ant = ant++;
+				ft_printf("L%d-%s ", path->numb_ant, path->room->name);
+				el->ants--;
+			}
+		}
 	}
 }
 
@@ -37,7 +43,8 @@ void	go_ant(t_lemin *el, t_ways *way, int a_on_th)
 	t_path	*path;
 
 	path = way->path;
-	while (--a_on_th > 0 && (path = way->path) == way->path)
+	while (--a_on_th > 0 && (path = way->path) == way->path &&
+			path->room->index != el->end)
 	{
 		while (path && path->busy != 1)
 			path = path->next;
@@ -74,7 +81,7 @@ void	push_ants(t_lemin *el)
 			go_ant(el, ways, ways->a_on_th + 1);
 			if (ways->a_on_th != ways->ants)
 			{
-				first_ant(ways, i);
+				first_ant(el, ways, i);
 				i++;
 			}
 			ways = ways->next;
