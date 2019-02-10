@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/30 12:58:42 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/10 14:27:51 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/10 14:47:40 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void		dell_way(t_ways *tmp)
 	tmp->next = NULL;
 }
 
-void		ways(t_lemin *el, t_rooms *end, t_rooms *room_min_lvl)
+void		ways(t_lemin *el, t_rooms *end, t_rooms *r_min_lvl)
 {
 	t_rooms		*tmp;
 
@@ -99,9 +99,9 @@ void		ways(t_lemin *el, t_rooms *end, t_rooms *room_min_lvl)
 		{
 			path_add(el, tmp);
 			tmp->busy = 0;
-			room_min_lvl = find_min_links(tmp);
-			if (room_min_lvl != NULL)
-				tmp = room_min_lvl;
+			r_min_lvl = find_min_links(tmp);
+			if (r_min_lvl != NULL)
+				tmp = r_min_lvl;
 			else
 			{
 				dell_way(el->ways);

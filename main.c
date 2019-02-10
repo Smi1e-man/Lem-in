@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/26 12:42:12 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/10 14:40:11 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/10 14:43:31 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,9 @@ void		room_add(t_rooms **tmp, char **r, t_lemin *el, t_rooms *list)
 	}
 	if ((*tmp)->index == el->start)
 	{
-		el->s_str = *tmp;
-		el->s_str->busy = 1;
-		el->s_str->lvl = 0;
+		el->str = *tmp;
+		el->str->busy = 1;
+		el->str->lvl = 0;
 	}
 	el->end_str = (*tmp)->index == el->end ? *tmp : 0;
 }
@@ -144,7 +144,7 @@ int			main(void)
 		free(line);
 	}
 	el->start == -1 || el->end == -1 || el->start == el->end ? ft_error() : 0;
-	!el->s_str || !el->end || el->lnk == 0 || el->ants <= 0 ? ft_error() : 0;
-	lvls(el, el->s_str, 1, 0);
+	!el->str || !el->end || el->lnk == 0 || el->ants <= 0 ? ft_error() : 0;
+	lvls(el, el->str, 1, 0);
 	return (0);
 }
