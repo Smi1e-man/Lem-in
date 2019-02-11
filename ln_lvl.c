@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/08 18:32:55 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/10 14:43:31 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/11 13:11:19 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ void		lvls(t_lemin *el, t_rooms *tmp, int k, int i)
 {
 	t_links		*links;
 
-	ft_printf("%s", el->prnt);
 	while (k > 0 && (tmp = el->rms) == el->rms)
 	{
 		while (tmp)
@@ -38,7 +37,7 @@ void		lvls(t_lemin *el, t_rooms *tmp, int k, int i)
 		k = k == 1 ? -1 : 1;
 	}
 	ways(el, el->rms, NULL);
-	el->ways ? ways_ants(el) : 0;
+	el->ways ? ways_ants(el) : ft_error();
 }
 
 void		nul_struct(t_lemin *el)
@@ -51,4 +50,17 @@ void		nul_struct(t_lemin *el)
 	el->str = NULL;
 	el->end_str = NULL;
 	el->lnk = 0;
+}
+
+void		room_link(t_rooms **tmp, t_lemin *el, char *l)
+{
+	char	**str;
+
+	str = ft_strsplit(l, ' ');
+	validate_room(l, str, el->rms);
+	room_add(tmp, str, el, NULL);
+	free(str[0]);
+	free(str[1]);
+	free(str[2]);
+	free(str);
 }

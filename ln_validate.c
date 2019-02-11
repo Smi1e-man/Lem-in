@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/08 13:55:21 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/10 14:22:05 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/11 13:20:49 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,16 +18,31 @@ void	ft_error(void)
 	exit(1);
 }
 
-void	ft_prnt_n_join(t_lemin *el, char *part)
+void	ft_prnt_n_join(t_lemin *el, char *part, int	v)
 {
-	char	*s1;
-	char	*s2;
-
-	s1 = ft_strjoin(el->prnt, "\n");
-	s2 = ft_strjoin(s1, part);
-	free(s1);
-	free(el->prnt);
-	el->prnt = s2;
+	if (!el->prnt && v == 0)
+	{
+		el->prnt = (t_prnt*)malloc(sizeof(t_prnt));
+		el->prnt->str = ft_strdup(part);
+		el->prnt->next = NULL;
+		el->end_prnt = el->prnt;
+	}
+	else if (v == 0)
+	{
+		el->end_prnt->next = (t_prnt*)malloc(sizeof(t_prnt));
+		el->end_prnt->next->str = ft_strdup(part);
+		el->end_prnt = el->end_prnt->next;
+		el->end_prnt->next = NULL;
+	}
+	if (v == 1)
+	{
+		el->end_prnt = el->prnt;
+		while (el->prnt)
+		{
+			ft_printf("%s\n", el->prnt->str);
+			el->prnt = el->prnt->next;
+		}
+	}
 }
 
 int		ft_numbs(char *str)
@@ -70,9 +85,13 @@ void	validate_room(char *line, char **str, t_rooms *tmp)
 void	validate_link(char **str, t_rooms *room_head)
 {
 	int		i;
+	int		start;
+	int		end;
 	t_rooms	*tmp;
 
-	ft_strcmp(str[0], str[1]) == 0 ? ft_error() : 0;
+	start = 0;
+	end = 0;
+	!str[0] || !str[1] || ft_strcmp(str[0], str[1]) == 0 ? ft_error() : 0;
 	i = -1;
 	while (str[++i] && (tmp = room_head) == room_head)
 	{
@@ -84,5 +103,4 @@ void	validate_link(char **str, t_rooms *room_head)
 		}
 		!tmp ? ft_error() : 0;
 	}
-	i > 2 || i < 2 ? ft_error() : 0;
 }

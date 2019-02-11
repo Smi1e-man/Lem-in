@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/01/26 12:42:12 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/10 14:43:31 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/11 13:20:45 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,27 +93,23 @@ void		room_add(t_rooms **tmp, char **r, t_lemin *el, t_rooms *list)
 
 int			room_save(t_rooms **tmp, t_lemin *el, char *l)
 {
-	char	**str;
-
 	if ((ft_strchr(l, '-')) == 0)
 	{
 		if (l[1] == '#')
 		{
 			if ((ft_strcmp(l, "##start")) == 0)
+			{
+				el->start != -1 ? ft_error() : 0;
 				el->start = *tmp != NULL ? (*tmp)->index + 1 : 0;
+			}
 			else if ((ft_strcmp(l, "##end")) == 0)
+			{
+				el->end != -1 ? ft_error() : 0;
 				el->end = *tmp != NULL ? (*tmp)->index + 1 : 0;
+			}
 		}
 		else if (l[0] != '#')
-		{
-			str = ft_strsplit(l, ' ');
-			validate_room(l, str, el->rms);
-			room_add(tmp, str, el, NULL);
-			free(str[0]);
-			free(str[1]);
-			free(str[2]);
-			free(str);
-		}
+			room_link(tmp, el, l);
 		return (1);
 	}
 	el->start == -1 || el->end == -1 || el->start == el->end ? ft_error() : 0;
@@ -132,11 +128,11 @@ int			main(void)
 	get_next_line(0, &line);
 	!line || line[0] == '\0' || ft_numbs(line) == 0 ? ft_error() : 0;
 	el->ants = ft_atoi(line);
-	el->prnt = ft_strjoin("", line);
+	ft_prnt_n_join(el, line, 0);
 	free(line);
 	while (get_next_line(0, &line) == 1)
 	{
-		ft_prnt_n_join(el, line);
+		ft_prnt_n_join(el, line, 0);
 		if (room_save(&tmp, el, line) == 1)
 			;
 		else if (line[0] != '#')

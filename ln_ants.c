@@ -6,7 +6,7 @@
 /*   By: seshevch <seshevch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/05 08:58:50 by seshevch          #+#    #+#             */
-/*   Updated: 2019/02/10 14:31:45 by seshevch         ###   ########.fr       */
+/*   Updated: 2019/02/11 12:36:45 by seshevch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,15 +67,12 @@ void	go_ant(t_lemin *el, t_ways *way, int a_on_th)
 void	push_ants(t_lemin *el)
 {
 	t_ways	*ways;
-	int		b;
 	int		i;
 
-	b = 0;
 	i = 1;
-	ft_printf("\n\n");
+	ft_printf("\n");
 	while (el->ants > 0 && (ways = el->ways) == el->ways)
 	{
-		b++;
 		while (ways)
 		{
 			go_ant(el, ways, ways->a_on_th + 1);
@@ -117,6 +114,7 @@ void	ways_ants(t_lemin *el)
 	int		ants;
 	t_ways	*ways;
 
+	ft_prnt_n_join(el, NULL, 1);
 	ants = el->ants;
 	while (ants > 0 && (ways = el->ways) == el->ways)
 	{
